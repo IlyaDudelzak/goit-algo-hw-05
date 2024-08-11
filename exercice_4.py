@@ -6,8 +6,11 @@ def input_error(func):
         try:
             return func(*args, **kwargs)
         except ValueError:
-
             return "Enter the argument for the command"
+        except KeyError:
+          print(KeyError)
+        except IndexError:
+          print(IndexError)
 
     return inner
 
