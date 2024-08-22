@@ -1,5 +1,6 @@
 def generator_numbers(text: str):
-  for n in text.split():
+  for n in text.split()[1:-1]:
+    print(n)
     try:
       yield float(n.strip())
     except Exception:

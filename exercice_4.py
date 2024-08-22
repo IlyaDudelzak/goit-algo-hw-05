@@ -1,16 +1,17 @@
 contacts = {}
 debug = False
 
+class ContactError(Exception):
+   pass
+
 def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except ValueError:
-            return "Enter the argument for the command"
-        except KeyError:
-          print(KeyError)
-        except IndexError:
-          print(IndexError)
+          return "Wrong args!"
+        except (KeyError,IndexError,ContactError) as e:
+          return str(e)
 
     return inner
 
@@ -23,7 +24,7 @@ def parse_input(user_input):
 def add_contact(args):
     name, phone = args
     if(name.casefold() in contacts):
-      raise ValueError
+      raise ContactError("Contact already registried")
     contacts[name.casefold()] = phone
     return "Contact added."
 
@@ -31,20 +32,15 @@ def add_contact(args):
 def change_contact(args):
     name, phone = args
     if(name not in contacts):
-      raise ValueError
+      raise ContactError("Contact isn`t registried")
     contacts[name.casefold()] = phone
     return "Contact changed."
 
 def get_phone(args):
-  try:
     if args[0].casefold() in contacts.keys():
       return contacts[args[0].casefold()]
     else:
-      return 1
-  except Exception as e:
-    return -1
-    if(debug):
-      print(e)
+      raise ContactError("Contact isn`t registried")
 
 def get_all(args):
   try:
@@ -74,22 +70,10 @@ def main():
             print(add_contact(args))
 
         elif command == "change":
-            r = change_contact(args)
-            if(r==0):
-              print("Success!")
-            elif(r==1):
-              print("Contact of " + args[0] + " doesn`t exist.")
-            elif(r==-1):
-              print("Wrong args!")
+            print(change_contact(args))
 
         elif command == "phone":
-            r = get_phone(args)
-            if(r==1):
-              print("Contact of " + args[0] + " doesn`t exist.")
-            elif(r==-1):
-              print("Wrong args!")
-            else:
-              print(r)
+            print(get_phone(args))
 
         elif command == "all":
             r = get_all(args)
